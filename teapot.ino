@@ -114,7 +114,9 @@ float printTemperature(DeviceAddress deviceAddress)
 {
   float tempC = sensors.getTempC(deviceAddress);
   Serial.print("Temp C: ");
-  Serial.print(tempC);
+  Serial.println(tempC);
+  Serial.print("Setpoint: ");
+  Serial.println(setpoint);
   return tempC;
 }
 
@@ -143,6 +145,11 @@ void touchState() {
       activeLed = 1;
       EEPROM.write(1, 80);
       EEPROM.write(2, 1);        
+    } else {
+      setpoint = 80;
+      activeLed = 1;
+      EEPROM.write(1, 80);
+      EEPROM.write(2, 1);
     }
   }
 }
@@ -152,6 +159,7 @@ void touchState() {
 void touchPress(){
   if (digitalRead(touch) == HIGH) {
     if (millis() >= btnTimer){
+      Serial.println("buttonPressed");
       btnTimer = millis() + 1500;
       blinker = true;
       if (buttonActive == false) {
@@ -159,6 +167,7 @@ void touchPress(){
         buttonTimer = millis();
       }
       if ((millis() - buttonTimer > longPressTime) && (changeTemperature == false)) {
+        Serial.println("TemperatureChanged");
         changeTemperature = true;
       }
     }
